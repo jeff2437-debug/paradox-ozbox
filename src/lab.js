@@ -4,7 +4,7 @@ export const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 export const rand = n => Math.floor(Math.random() * n);
 export const pct = (v, dp = 1) => (isFinite(v) ? (v * 100).toFixed(dp) : '–') + '%';
 export const num = v => Math.round(v).toLocaleString('en-AU');
-export const COLORS = { s1: '#2a78d6', s2: '#eb6834' };
+export const COLORS = { s1: '#2a78d6', s2: '#eb6834', s3: '#1baf7a', s4: '#eda100' };
 
 /** Run `total` steps of `step(i)` spread over animation frames, calling `frame()` after each batch. */
 export function animate(total, step, frame, done, ms = 1600) {
@@ -38,8 +38,9 @@ export const svgEl = (tag, attrs = {}) => { const e = document.createElementNS(N
  * returns { update(arrays, xMax), setRefs(refs), setMarker(i) }
  */
 export function lineChart(box, opts) {
-  const W = 640, H = 250, L = 46, R = 112, T = 14, B = 34;
-  const yMax = opts.yMax ?? 1, yFmt = opts.yFmt ?? (v => Math.round(v * 100) + '%'), xFmt = opts.xFmt ?? (v => num(v));
+  const W = 640, H = 250, L = 52, R = 112, T = 14, B = 34;
+  const yFmt = opts.yFmt ?? (v => Math.round(v * 100) + '%'), xFmt = opts.xFmt ?? (v => num(v));
+  let yMin = opts.yMin ?? 0, yMax = opts.yMax ?? 1;
   box.classList.add('chart');
   box.innerHTML = (opts.series.length > 1 ? `<div class="legend">${opts.series.map(s => `<span><i style="background:${s.color}"></i>${s.name}</span>`).join('')}</div>` : '') +
     `<div class="plot"></div><div class="tip" hidden></div>`;
@@ -49,32 +50,47 @@ export function lineChart(box, opts) {
   const gGrid = svgEl('g'), gRefs = svgEl('g'), gLines = svgEl('g'), gLabels = svgEl('g'), gHover = svgEl('g', { visibility: 'hidden' });
   svg.append(gGrid, gRefs, gLines, gLabels, gHover);
   const pw = W - L - R, ph = H - T - B;
-  const ys = v => T + ph - (v / yMax) * ph;
-  for (let k = 0; k <= 4; k++) {
-    const v = yMax * k / 4, y = ys(v);
-    gGrid.append(svgEl('line', { x1: L, x2: L + pw, y1: y, y2: y, class: k ? 'grid' : 'axis' }));
-    const t = svgEl('text', { x: L - 6, y: y + 4, 'text-anchor': 'end', class: 'tick' }); t.textContent = yFmt(v); gGrid.append(t);
+  const ys = v => T + ph - ((v - yMin) / (yMax - yMin || 1)) * ph;
+  const xTicks = svgEl('g'), yTicks = svgEl('g');
+  const xTitle = svgEl('text', { x: L + pw / 2, y: H - 4, 'text-anchor': 'middle', class: 'tick' }); xTitle.textContent = opts.xLabel || '';
+  gGrid.append(yTicks, xTicks, xTitle);
+  function drawY() {
+    yTicks.innerHTML = '';
+    const ticks = opts.yTicks ? opts.yTicks(yMin, yMax) : Array.from({ length: 5 }, (_, k) => yMin + (yMax - yMin) * k / 4);
+    for (const v of ticks) {
+      const y = ys(v);
+      yTicks.append(svgEl('line', { x1: L, x2: L + pw, y1: y, y2: y, class: Math.abs(v) < 1e-9 || v === yMin ? 'axis' : 'grid' }));
+      const t = svgEl('text', { x: L - 6, y: y + 4, 'text-anchor': 'end', class: 'tick' }); t.textContent = yFmt(v); yTicks.append(t);
+    }
   }
-  const xTitle = svgEl('text', { x: L + pw / 2, y: H - 4, 'text-anchor': 'middle', class: 'tick' }); xTitle.textContent = opts.xLabel || ''; gGrid.append(xTitle);
-  const xTicks = svgEl('g'); gGrid.append(xTicks);
+  drawY();
   const paths = opts.series.map(s => { const p = svgEl('path', { fill: 'none', stroke: s.color, 'stroke-width': 2, 'stroke-linejoin': 'round' }); gLines.append(p); return p; });
   const cross = svgEl('line', { y1: T, y2: T + ph, class: 'cross' }); gHover.append(cross);
   const dots = opts.series.map(s => { const c = svgEl('circle', { r: 4.5, fill: s.color, stroke: '#fff', 'stroke-width': 2 }); gHover.append(c); return c; });
   const mark = svgEl('g', { visibility: 'hidden' }); svg.append(mark);
   const markLine = svgEl('line', { y1: T, y2: T + ph, class: 'mark' }), markDot = svgEl('circle', { r: 5, fill: opts.series[0].color, stroke: '#fff', 'stroke-width': 2 });
   mark.append(markLine, markDot);
-  let data = opts.series.map(() => []), xMax = 1;
+  let data = opts.series.map(() => []), xMax = 1, refs = opts.refs || [];
   const xs = x => L + (xMax <= 1 ? 0 : (x - 1) / (xMax - 1)) * pw;
 
-  function drawRefs(refs = []) {
-    gRefs.innerHTML = '';
-    for (const r of refs) {
-      const y = ys(r.y);
-      gRefs.append(svgEl('line', { x1: L, x2: L + pw, y1: y, y2: y, stroke: r.color || '#8a84a3', 'stroke-dasharray': '5 4', 'stroke-width': 1.5 }));
+  function drawRefs(r = refs) {
+    refs = r; gRefs.innerHTML = '';
+    for (const ref of refs) {
+      if (ref.y < yMin || ref.y > yMax) continue;
+      const y = ys(ref.y);
+      gRefs.append(svgEl('line', { x1: L, x2: L + pw, y1: y, y2: y, stroke: ref.color || '#8a84a3', 'stroke-dasharray': '5 4', 'stroke-width': 1.5 }));
     }
   }
   function update(arrays, newMax) {
     data = arrays; xMax = newMax || Math.max(1, ...arrays.map(a => a.length));
+    if (opts.autoY) {
+      let lo = Infinity, hi = -Infinity;
+      for (const a of arrays) for (const v of a) { if (v < lo) lo = v; if (v > hi) hi = v; }
+      for (const r of refs) { lo = Math.min(lo, r.y); hi = Math.max(hi, r.y); }
+      if (!isFinite(lo)) { lo = 0; hi = 1; }
+      [yMin, yMax] = opts.autoY(lo, hi);
+      drawY(); drawRefs();
+    }
     xTicks.innerHTML = '';
     for (const x of niceTicks(xMax)) {
       const t = svgEl('text', { x: xs(x), y: T + ph + 16, 'text-anchor': 'middle', class: 'tick' }); t.textContent = xFmt(x); xTicks.append(t);
@@ -118,8 +134,17 @@ export function lineChart(box, opts) {
     tip.style.left = Math.min(r.width - tip.offsetWidth - 4, Math.max(4, left + 12)) + 'px';
   });
   svg.addEventListener('pointerleave', () => { gHover.setAttribute('visibility', 'hidden'); tip.hidden = true; });
-  drawRefs(opts.refs);
+  drawRefs();
   return { update, setRefs: drawRefs, setMarker };
+}
+
+/** Round a data range out to tidy chart bounds. */
+export function niceRange(lo, hi, zero = true) {
+  if (zero) { lo = Math.min(0, lo); hi = Math.max(0, hi); }
+  if (hi - lo < 1e-9) hi = lo + 1;
+  const raw = (hi - lo) / 4, mag = 10 ** Math.floor(Math.log10(raw));
+  const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= raw);
+  return [Math.floor(lo / step) * step, Math.ceil(hi / step) * step];
 }
 
 function niceTicks(max) {

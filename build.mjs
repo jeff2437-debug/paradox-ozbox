@@ -23,6 +23,7 @@ const write = (p, body) => { const f = join(OUT, p); mkdirSync(dirname(f), { rec
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const strip = s => s.replace(/<[^>]+>/g, '');
 const jsonLd = o => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`;
+const catId = c => c.toLowerCase().replace(/[^a-z]+/g, '-');
 const bySlug = Object.fromEntries(PARADOXES.map(p => [p.slug, p]));
 
 const NAV = [['/', 'All paradoxes'], ['/about/', 'About']];
@@ -90,7 +91,7 @@ const tile = (p, tag = 'h2') => `<a class="tile" href="/${p.slug}/"><span class=
 for (const p of PARADOXES) {
   if (!SIMS.includes(p.slug + '.js')) throw new Error(`Missing simulator src/sims/${p.slug}.js`);
   page({
-    path: `/${p.slug}/`, h1: p.title, crumbs: [['/#' + p.category.toLowerCase(), p.category]], sim: p.slug,
+    path: `/${p.slug}/`, h1: p.title, crumbs: [['/#' + catId(p.category), p.category]], sim: p.slug,
     title: `${p.metaTitle} | ${SITE_NAME}`, description: p.description, faq: p.faq,
     ld: [{ '@context': 'https://schema.org', '@type': 'Article', headline: strip(p.title), description: p.description,
       author: { '@type': 'Organization', name: SITE_NAME }, publisher: { '@type': 'Organization', name: SITE_NAME }, mainEntityOfPage: `${SITE_URL}/${p.slug}/` }],
@@ -117,7 +118,7 @@ page({
   body: `<p class="lede">Some answers feel wrong even after someone proves them. Here you don't have to take anyone's word for it: every paradox comes with a game to play or a simulation to run, then a plain-English explanation of what's really going on.</p>
 ${CATEGORIES.map(c => {
   const list = PARADOXES.filter(p => p.category === c);
-  return list.length ? `<h2 id="${c.toLowerCase()}">${c}</h2><div class="tiles">${list.map(p => tile(p, 'h3')).join('')}</div>` : '';
+  return list.length ? `<h2 id="${catId(c)}">${c}</h2><div class="tiles">${list.map(p => tile(p, 'h3')).join('')}</div>` : '';
 }).join('')}
 <div class="note">Got a favourite paradox you'd like to see here? <a href="/contact/">Suggest one</a>.</div>`,
 });

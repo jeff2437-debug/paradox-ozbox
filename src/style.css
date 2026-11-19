@@ -32,12 +32,12 @@ h3{font-size:1.05rem;margin:1.2rem 0 .3rem}
 .chip[aria-pressed=true]{background:var(--accent);color:#fff;border-color:var(--accent)}
 .presets span{font-size:.9rem;color:var(--muted)}
 .controls{display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;align-items:end;margin:.6rem 0 1rem}
-.controls label{display:flex;flex-direction:column;gap:.2rem;font-size:.92rem;color:var(--muted)}
+.controls label{max-width:100%;min-width:0;display:flex;flex-direction:column;gap:.2rem;font-size:.92rem;color:var(--muted)}
 .controls label.grow{flex:1 1 100%}
 .controls label.check{flex-direction:row;align-items:center;gap:.4rem}
 .controls.sliders label{flex:1 1 240px}
 .controls b{color:var(--ink)}
-select{font:inherit;padding:.3rem .5rem;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+select{max-width:100%;font:inherit;padding:.3rem .5rem;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
 input[type=range]{width:100%;accent-color:var(--accent);height:1.6rem}
 input[type=checkbox]{accent-color:var(--accent);width:1.1rem;height:1.1rem}
 .msg{min-height:1.6em;margin:.5rem 0}
@@ -137,3 +137,45 @@ footer.foot .wrap{padding:1.2rem 1rem}
 footer.foot a{color:var(--muted)}
 @media(max-width:560px){.people{grid-template-columns:repeat(25,1fr)}table{font-size:.85rem}th,td{padding:.4rem .35rem}.calrow{grid-template-columns:1.6rem repeat(31,1fr);gap:1px}}
 @media print{header.top,footer.foot,.lab,ins{display:none!important}body{background:#fff}}
+/* Boy or girl */
+.fams{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:.4rem;margin:.6rem 0}
+.fam{display:flex;gap:.25rem;padding:.3rem;border:1px solid var(--line);border-radius:8px;background:#fff}
+.fam.out{opacity:.28}
+.fam.bb{border-color:var(--s2);box-shadow:0 0 0 2px var(--s2)}
+.kid{flex:1;text-align:center;font-size:.78rem;font-weight:700;border-radius:6px;padding:.15rem 0;line-height:1.2}
+.kid small{display:block;font-weight:400;font-size:.7rem}
+.kid.b{background:#dbe8f9;color:#184f95}
+.kid.g{background:#fbe1d6;color:#8d3510}
+/* Envelopes */
+.envs{display:grid;grid-template-columns:repeat(2,minmax(0,180px));gap:1rem;margin:.6rem 0}
+.env{font:inherit;cursor:pointer;aspect-ratio:3/2;border:2px solid #c9b98f;border-radius:8px;background:linear-gradient(160deg,#fbf3dc,#efe1b8);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--ink)}
+.env b{font-size:1.5rem}
+.env span{font-size:.85rem;color:var(--muted)}
+.env.picked{outline:4px solid var(--s1);outline-offset:3px}
+.env:disabled{cursor:default}
+/* Bus timeline, network */
+.timeline,.net{width:100%;height:auto;display:block;margin:.4rem 0}
+.timeline .axis{stroke:#bdb7d0}
+.timeline .tick{font-size:11px;fill:var(--muted)}
+.net{background:#fff;border:1px solid var(--line);border-radius:10px}
+.nodelabel{font-size:9px;fill:#fff;font-weight:700;pointer-events:none}
+/* Will Rogers, Benford */
+.groups{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.group{background:#fff;border:1px solid var(--line);border-radius:10px;padding:.6rem .8rem}
+.group h3{margin:0 0 .4rem}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem;min-height:2.2rem}
+.num-chip{font-size:1rem;font-weight:700;min-width:2.8rem}
+.num-chip:hover{border-color:var(--accent);background:#efeafb}
+.up{color:var(--good);font-weight:700}
+.down{color:#b3261e;font-weight:700}
+textarea{width:100%;font:inherit;font-size:.92rem;border:1px solid var(--line);border-radius:8px;padding:.5rem;background:#fff;color:var(--ink)}
+.net .axis{stroke:#bdb7d0}.net .grid{stroke:#ebe8f3}.net .tick{font-size:11px;fill:var(--muted)}
+/* Hilbert, clocks, roads */
+.rooms{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:.35rem;margin:.6rem 0}
+.room{border:1px solid var(--line);border-radius:8px;padding:.25rem .3rem;text-align:center;background:#dbe8f9;line-height:1.2}
+.room small{display:block;font-size:.68rem;color:var(--muted)}
+.room b{font-size:.9rem}
+.room.new{background:#d8f1e6}.room.coach{background:#fbe1d6}.room.empty{background:#f1eff6;color:var(--muted)}
+.room.more{background:none;border:none;display:grid;place-items:center;font-size:1.4rem;color:var(--muted)}
+.clock{font-size:12px;font-weight:700;fill:var(--ink)}
+.roadlabel{font-size:12px;fill:var(--ink);font-weight:600;paint-order:stroke;stroke:#fff;stroke-width:4px}

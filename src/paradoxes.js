@@ -1,9 +1,14 @@
 // Each paradox becomes /<slug>/ with its simulator in src/sims/<slug>.js
 const sel = (name, opts, chosen) => `<select name="${name}">${opts.map(o => `<option${o === chosen ? ' selected' : ''} value="${o}">${Number(o).toLocaleString('en-AU')}</option>`).join('')}</select>`;
 
-export const CATEGORIES = ['Probability', 'Statistics'];
+import { PROBABILITY } from './content/probability.js';
+import { STATISTICS } from './content/statistics.js';
+import { PHYSICS } from './content/physics.js';
+import { LOGIC } from './content/logic.js';
 
-export const PARADOXES = [
+export const CATEGORIES = ['Probability', 'Statistics', 'Physics', 'Maths and logic'];
+
+const LAUNCH = [
 /* =============================== MONTY HALL =============================== */
 {
   slug: 'monty-hall-problem', category: 'Probability', icon: '🚪', short: 'Monty Hall problem',
@@ -293,3 +298,5 @@ export const PARADOXES = [
   related: ['simpsons-paradox', 'bertrands-box-paradox'],
 },
 ];
+
+export const PARADOXES = [...LAUNCH, ...PROBABILITY, ...STATISTICS, ...PHYSICS, ...LOGIC];
