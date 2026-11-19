@@ -8,7 +8,7 @@ const SITE_URL = 'https://paradox.ozbox.org';
 const SITE_NAME = 'Paradox Lab';
 const CONTACT_EMAIL = 'contact@ozbox.org';
 const ADSENSE_CLIENT = 'ca-pub-3136341800882537';
-const CF_BEACON = ''; // add the Cloudflare Web Analytics token once the site exists
+const CF_BEACON = '3865070444824e0db192e7de48873b8c';
 const REVIEWED = 'November 2026';
 const OUT = 'site';
 

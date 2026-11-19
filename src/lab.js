@@ -29,8 +29,8 @@ export function bars(box, items) {
     `</span><b>${it.text}</b></div>`).join('');
 }
 
-const NS = 'http://www.w3.org/2000/svg';
-const svgEl = (tag, attrs = {}) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+export const NS = 'http://www.w3.org/2000/svg';
+export const svgEl = (tag, attrs = {}) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
 
 /**
  * Line chart with hover crosshair. Values are indexed from x = 1.
@@ -129,4 +129,17 @@ function niceTicks(max) {
   const out = [1];
   for (let v = step; v <= max; v += step) out.push(v);
   return out.filter((v, i, a) => i === 0 || v - a[i - 1] >= step * 0.6);
+}
+
+/** Seeded random generator (mulberry32), for repeatable pictures. */
+export function seeded(seed) {
+  return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+}
+/** Standard normal random number (Box–Muller). */
+export const normal = (r = Math.random) => { let u = 0; while (!u) u = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * r()); };
+export const mean = a => a.reduce((s, x) => s + x, 0) / (a.length || 1);
+export function correlation(xs, ys) {
+  const mx = mean(xs), my = mean(ys); let sxy = 0, sxx = 0, syy = 0;
+  for (let i = 0; i < xs.length; i++) { const dx = xs[i] - mx, dy = ys[i] - my; sxy += dx * dy; sxx += dx * dx; syy += dy * dy; }
+  return sxy / Math.sqrt(sxx * syy);
 }
