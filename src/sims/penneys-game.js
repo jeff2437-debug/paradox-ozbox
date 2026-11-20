@@ -15,8 +15,14 @@ const score = { you: 0, cpu: 0 };
 const pickBtns = $$('[data-pos]', play);
 function showPick() { pickBtns.forEach((b, i) => { b.textContent = mine[i]; b.className = 'coin big ' + mine[i]; }); }
 pickBtns.forEach((b, i) => b.addEventListener('click', () => {
-  if (!over) return;
   mine = mine.slice(0, i) + (mine[i] === 'H' ? 'T' : 'H') + mine.slice(i + 1); showPick();
+  // Changing the pick abandons any game in progress and clears the old result.
+  clearInterval(timer); over = true; flips = '';
+  $('[data-cpu]', play).innerHTML = '';
+  $('[data-flips]', play).innerHTML = '';
+  $('[data-msg]', play).textContent = 'Press Start when you’re happy with your pick.';
+  $$('[data-flip],[data-auto]', play).forEach(b => b.disabled = true);
+  $('[data-start]', play).textContent = 'Start';
 }));
 function start() {
   clearInterval(timer);
