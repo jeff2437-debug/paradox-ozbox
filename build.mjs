@@ -3,6 +3,7 @@ import { mkdirSync, writeFileSync, readFileSync, copyFileSync, rmSync, existsSyn
 import { createHash } from 'node:crypto';
 import { join, dirname } from 'node:path';
 import { PARADOXES, CATEGORIES } from './src/paradoxes.js';
+import { titleCaseSite } from './titlecase.mjs';
 
 const SITE_URL = 'https://paradox.ozbox.org';
 const SITE_NAME = 'Paradox Lab';
@@ -152,4 +153,5 @@ write('ads.txt', `google.com, ${ADSENSE_CLIENT.replace('ca-', '')}, DIRECT, f08c
 write('_headers', `/assets/*\n  Cache-Control: public, max-age=3600\n/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n`);
 const today = new Date().toISOString().slice(0, 10);
 write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(p => `<url><loc>${SITE_URL}${p}</loc><lastmod>${today}</lastmod></url>`).join('\n')}\n</urlset>\n`);
+titleCaseSite(OUT); // Title Case for every heading and page title
 console.log(`Built ${pages.length} pages into ${OUT}/`);
