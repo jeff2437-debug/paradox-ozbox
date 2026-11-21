@@ -76,7 +76,7 @@ ${faqHtml}
 </main>
 <footer class="foot"><div class="wrap">
 <p>Paradoxes you can test for yourself. Simulations run entirely in your browser using its random number generator, so results vary a little each time. Last reviewed ${REVIEWED}.</p>
-<p><a href="/about/">About</a> · <a href="/privacy/">Privacy</a> · <a href="/contact/">Contact</a> · Sister sites: <a href="https://lotto.ozbox.org/">lotto.ozbox.org</a> · <a href="https://ev.ozbox.org/">ev.ozbox.org</a> · <a href="https://fakeaway.ozbox.org/">fakeaway.ozbox.org</a></p>
+<p><a href="/about/">About</a> · <a href="/privacy/">Privacy</a> · <a href="/contact/">Contact</a> · Sister sites: <a href="https://lotto.ozbox.org/">lotto.ozbox.org</a> · <a href="https://ev.ozbox.org/">ev.ozbox.org</a> · <a href="https://fakeaway.ozbox.org/">fakeaway.ozbox.org</a> · <a href="https://mortgage.ozbox.org/">mortgage.ozbox.org</a></p>
 </div></footer>
 ${sim ? `<script type="module" src="/assets/sims/${sim}.js?v=${ASSET_V}"></script>` : ''}
 ${CF_BEACON ? `<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "${CF_BEACON}"}'></script>` : ''}
