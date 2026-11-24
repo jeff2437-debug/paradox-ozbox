@@ -97,7 +97,8 @@ const LAUNCH = [
 <h2>Real birthdays make it even more likely</h2>
 <p>The calculation assumes every day is equally likely. Real birthdays aren't spread evenly: some months are noticeably busier than others. Any unevenness makes matches slightly <em>more</em> likely, so the true number for real people is, if anything, a little under 23.</p>
 <h2>Where it matters</h2>
-<p>The same maths explains "hash collisions" in computing and the <em>birthday attack</em> in cryptography: when you generate many random codes, duplicates turn up far sooner than you'd expect. A system with a million possible codes has a 50% chance of a repeat after only about 1,200 of them.</p>`,
+<p>The same maths explains "hash collisions" in computing and the <em>birthday attack</em> in cryptography: when you generate many random codes, duplicates turn up far sooner than you'd expect. A system with a million possible codes has a 50% chance of a repeat after only about 1,200 of them.</p>
+<p>Lotteries show it too. Saturday Lotto has 8,145,060 possible combinations, yet after only about 3,400 draws there's an even chance that some winning combination has already come up twice. You can explore the real odds of each game at <a href="https://lotto.ozbox.org/saturday-lotto/">lotto.ozbox</a>.</p>`,
   faq: [
     ['How many people do you need for a 50% chance of a shared birthday?', '23. With 23 people the chance is about 50.7%.'],
     ['How many people do you need to be certain?', 'To be 100% certain you need 367 people (366 possible birthdays, including 29 February, plus one). In practice 70 people already gives better than a 99.9% chance.'],

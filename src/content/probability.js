@@ -46,7 +46,7 @@ export const PROBABILITY = [
 <h2>Where the name comes from</h2>
 <p>Nicolaus Bernoulli described the game in 1713. His cousin Daniel Bernoulli published his famous solution in the journal of the Imperial Academy of Sciences in St Petersburg, which gave the paradox its name.</p>
 <h2>The lesson</h2>
-<p>"Expected value" is a powerful tool, but it isn't the whole story when outcomes are extreme. It's the same reason a lottery ticket can have a terrible average return yet still feel worth a few dollars, and why insurance is worth buying even though, on average, you pay more than you get back.</p>`,
+<p>"Expected value" is a powerful tool, but it isn't the whole story when outcomes are extreme. It's the same reason a lottery ticket can have a terrible <a href="https://lotto.ozbox.org/guides/how-lottery-odds-work/">average return</a> yet still feel worth a few dollars, and why insurance is worth buying even though, on average, you pay more than you get back.</p>`,
   faq: [
     ['What is the expected value of the St Petersburg game?', 'Infinite. Each possible outcome contributes $1 to the average, and there are infinitely many outcomes.'],
     ['How much should you pay to play the St Petersburg game?', 'There\'s no single right answer. With a casino that can pay at most $1 billion, the game is worth about $31 on average. Using Bernoulli\'s idea of diminishing value of money, most people would sensibly pay somewhere between a few dollars and about $20.'],
