@@ -150,7 +150,7 @@ for (const f of SIMS) writeFileSync(join(OUT, 'assets/sims', f), readFileSync('s
 for (const f of ['og.png', 'favicon.ico', 'apple-touch-icon.png', 'favicon.svg']) if (existsSync('src/' + f)) copyFileSync('src/' + f, join(OUT, f));
 write('robots.txt', `User-agent: *\nAllow: /\nSitemap: ${SITE_URL}/sitemap.xml\n`);
 write('ads.txt', `google.com, ${ADSENSE_CLIENT.replace('ca-', '')}, DIRECT, f08c47fec0942fa0\n`);
-for (const f of readdirSync('src/media')) { mkdirSync(join(OUT, 'media'), { recursive: true }); copyFileSync('src/media/' + f, join(OUT, 'media', f)); }
+for (const f of readdirSync('src/media').filter(f => !f.startsWith('.'))) { mkdirSync(join(OUT, 'media'), { recursive: true }); copyFileSync('src/media/' + f, join(OUT, 'media', f)); }
 write('_headers', `/media/*\n  Access-Control-Allow-Origin: *\n  X-Robots-Tag: noindex\n/assets/*\n  Cache-Control: public, max-age=3600\n/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n`);
 const today = new Date().toISOString().slice(0, 10);
 write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map(p => `<url><loc>${SITE_URL}${p}</loc><lastmod>${today}</lastmod></url>`).join('\n')}\n</urlset>\n`);
