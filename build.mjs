@@ -88,6 +88,21 @@ ${CF_BEACON ? `<script defer src="https://static.cloudflareinsights.com/beacon.m
 
 const tile = (p, tag = 'h2') => `<a class="tile" href="/${p.slug}/"><span class="ic" aria-hidden="true">${p.icon}</span><${tag}>${p.short}</${tag}><p>${p.teaser}</p><small>${p.category}</small></a>`;
 
+/* ---------- YouTube Shorts embedded on paradox pages (click-to-load, privacy-enhanced) ---------- */
+const VIDEOS = {
+  'monty-hall-problem': { id: 'XdXrWAEDDdQ', name: 'Should you switch doors? The Monty Hall problem in 10,000 games', date: '2026-11-28', dur: 'PT32S',
+    blurb: 'Play one round, then run 10,000 games, in 32 seconds.' },
+};
+const videoBlock = (slug, v) => `<section class="card video">
+<h2>▶️ Watch it in 30 seconds</h2>
+<button type="button" class="yt" aria-label="Play video: ${v.name}" onclick="this.outerHTML='<iframe src=&quot;https://www.youtube-nocookie.com/embed/${v.id}?autoplay=1&amp;playsinline=1&amp;rel=0&quot; title=&quot;${v.name}&quot; allow=&quot;autoplay; encrypted-media; picture-in-picture&quot; allowfullscreen></iframe>'">
+<img src="/video/${slug}.jpg" alt="" width="540" height="960" loading="lazy"><span class="play" aria-hidden="true"></span></button>
+<p class="hint">${v.blurb} <a href="https://www.youtube.com/shorts/${v.id}" rel="noopener">Watch on YouTube</a>. The video loads from YouTube only when you press play.</p>
+</section>`;
+const videoLd = (slug, v) => ({ '@context': 'https://schema.org', '@type': 'VideoObject', name: v.name, description: v.blurb,
+  thumbnailUrl: `${SITE_URL}/video/${slug}.jpg`, uploadDate: v.date, duration: v.dur,
+  contentUrl: `https://www.youtube.com/shorts/${v.id}`, embedUrl: `https://www.youtube.com/embed/${v.id}` });
+
 /* ---------- paradox pages ---------- */
 for (const p of PARADOXES) {
   if (!SIMS.includes(p.slug + '.js')) throw new Error(`Missing simulator src/sims/${p.slug}.js`);
@@ -95,11 +110,13 @@ for (const p of PARADOXES) {
     path: `/${p.slug}/`, h1: p.title, crumbs: [['/#' + catId(p.category), p.category]], sim: p.slug,
     title: `${p.metaTitle} | ${SITE_NAME}`, description: p.description, faq: p.faq,
     ld: [{ '@context': 'https://schema.org', '@type': 'Article', headline: strip(p.title), description: p.description,
-      author: { '@type': 'Organization', name: SITE_NAME }, publisher: { '@type': 'Organization', name: SITE_NAME }, mainEntityOfPage: `${SITE_URL}/${p.slug}/` }],
+      author: { '@type': 'Organization', name: SITE_NAME }, publisher: { '@type': 'Organization', name: SITE_NAME }, mainEntityOfPage: `${SITE_URL}/${p.slug}/` },
+      ...(VIDEOS[p.slug] ? [videoLd(p.slug, VIDEOS[p.slug])] : [])],
     body: `<p class="lede">${p.tagline}</p>
 <h2>The puzzle</h2>
 <div class="puzzle">${p.puzzle}</div>
 ${p.lab}
+${VIDEOS[p.slug] ? videoBlock(p.slug, VIDEOS[p.slug]) : ''}
 ${p.explain}`,
   });
   // related tiles go after the FAQ: append to the written page
@@ -137,6 +154,8 @@ page({ path: '/privacy/', h1: 'Privacy', title: `Privacy policy | ${SITE_NAME}`,
 <p>This site uses Google AdSense to show ads. Google and its partners may use cookies to show ads based on your visits to this and other websites. You can turn off personalised ads at <a href="https://adssettings.google.com/">Google Ad Settings</a>, and learn more at <a href="https://policies.google.com/technologies/partner-sites">how Google uses information from sites that use its services</a>.</p>
 <h2>Visitor statistics</h2>
 <p>We use Cloudflare Web Analytics to count page views. It doesn't use cookies and doesn't track you across sites.</p>
+<h2>Embedded videos</h2>
+<p>Some pages include a short YouTube video. Nothing loads from YouTube until you press play, and the player uses YouTube's privacy-enhanced mode. Once it's playing, YouTube's <a href="https://policies.google.com/privacy">privacy policy</a> applies.</p>
 <h2>Contact</h2>
 <p>Questions: <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.</p>` });
 page({ path: '/contact/', h1: 'Contact', title: `Contact | ${SITE_NAME}`, description: 'Contact Paradox Lab.',
@@ -150,6 +169,7 @@ for (const f of SIMS) writeFileSync(join(OUT, 'assets/sims', f), readFileSync('s
 for (const f of ['og.png', 'favicon.ico', 'apple-touch-icon.png', 'favicon.svg']) if (existsSync('src/' + f)) copyFileSync('src/' + f, join(OUT, f));
 write('robots.txt', `User-agent: *\nAllow: /\nSitemap: ${SITE_URL}/sitemap.xml\n`);
 write('ads.txt', `google.com, ${ADSENSE_CLIENT.replace('ca-', '')}, DIRECT, f08c47fec0942fa0\n`);
+mkdirSync(join(OUT, 'video'), { recursive: true }); for (const f of readdirSync('src/video')) copyFileSync('src/video/' + f, join(OUT, 'video', f));
 for (const f of readdirSync('src/media').filter(f => !f.startsWith('.'))) { mkdirSync(join(OUT, 'media'), { recursive: true }); copyFileSync('src/media/' + f, join(OUT, 'media', f)); }
 write('_headers', `/media/*\n  Access-Control-Allow-Origin: *\n  X-Robots-Tag: noindex\n/assets/*\n  Cache-Control: public, max-age=3600\n/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n`);
 const today = new Date().toISOString().slice(0, 10);
